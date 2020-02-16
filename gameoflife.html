@@ -1,0 +1,66 @@
+<html>
+    <canvas id="life">
+
+    </canvas>
+    <script>
+        const canvas = document.getElementById('life');
+        const ctx = canvas.getContext('2d');
+        const gridHeight = 250;
+        const gridWidth = 250;
+        canvas.setAttribute("height", gridHeight);
+        canvas.setAttribute("width", gridWidth);
+
+        function nextGeneration(grid)
+        {
+            let newGrid = new Array(gridHeight).fill(0).map(_ => new Array(gridWidth).fill(false));
+
+            for (let i = 0; i < gridHeight; i++) {
+                for (let j = 0; j < gridWidth; j++) {
+                    const numberOfLiveNeighbors = (
+                        girdValueToNumber(grid, i - 1, j - 1) + girdValueToNumber(grid, i + 0, j - 1) + girdValueToNumber(grid, i + 1, j - 1) +
+                        girdValueToNumber(grid, i - 1, j + 0) +                                         girdValueToNumber(grid, i + 1, j + 0) +
+                        girdValueToNumber(grid, i - 1, j + 1) + girdValueToNumber(grid, i + 0, j + 1) + girdValueToNumber(grid, i + 1, j + 1)
+                    ); 
+
+                    if(grid[i][j]) {
+                        newGrid[i][j] = (numberOfLiveNeighbors === 2 || numberOfLiveNeighbors === 3);
+
+                    }
+                    else {
+                        newGrid[i][j] = numberOfLiveNeighbors === 3;
+                    }
+                }
+            }
+            
+            return newGrid;
+        }
+
+        function drawGrid(grid){
+            for (let i = 0; i < gridHeight; i++) {
+                for (let j = 0; j < gridWidth; j++) {
+                    ctx.fillStyle = (grid[i][j]) ? 'black' : 'white';
+                    ctx.fillRect(i, j, 1, 1);
+                }
+            }
+        }
+
+        function girdValueToNumber(grid, x, y) {
+            return (0 <= x && x < gridWidth && 0 <= y && y < gridHeight && grid[x][y]) ? 1 : 0;
+        }
+
+        let grid = new Array(gridHeight).fill(0).map(_ => new Array(gridWidth).fill(false));
+
+        for (let i = 0; i < gridHeight; i++) {
+            for (let j = 0; j < gridWidth; j++) {
+                grid[i][j] = Math.random() > .5;
+            }
+        }
+
+
+        window.setInterval(_ => {
+            grid = nextGeneration(grid);
+            drawGrid(grid);
+        } ,50);
+
+    </script>
+</html>
